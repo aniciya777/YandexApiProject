@@ -14,8 +14,8 @@ class Example(QWidget):
         self.coords = 37.530887, 55.703118
         self.scale = 0.002
         self.map_style = 'map'
-        self.getImage()
         self.initUI()
+        self.getImage()
 
     def getImage(self):
         map_request = "http://static-maps.yandex.ru/1.x/"
@@ -29,24 +29,17 @@ class Example(QWidget):
             print(map_request)
             print("Http статус:", response.status_code, "(", response.reason, ")")
             sys.exit(1)
-        # Запишем полученное изображение в файл.
-        self.map_file = "map.png"
-        with open(self.map_file, "wb") as file:
-            file.write(response.content)
-
-    def initUI(self):
-        self.setGeometry(100, 100, *SCREEN_SIZE)
-        self.setWindowTitle('Отображение карты')
         ## Изображение
-        self.pixmap = QPixmap(self.map_file)
+        self.pixmap = QPixmap()
+        self.pixmap.loadFromData(response.content)
         self.image = QLabel(self)
         self.image.move(0, 0)
         self.image.resize(600, 450)
         self.image.setPixmap(self.pixmap)
 
-    def closeEvent(self, event):
-        """При закрытии формы подчищаем за собой"""
-        os.remove(self.map_file)
+    def initUI(self):
+        self.setGeometry(100, 100, *SCREEN_SIZE)
+        self.setWindowTitle('Отображение карты')
 
 
 if __name__ == '__main__':
