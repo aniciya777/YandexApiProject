@@ -12,7 +12,7 @@ SCREEN_SIZE = [600, 450]
 class Example(QWidget):
     def __init__(self):
         super().__init__()
-        self.coords = 37.530887, 55.703118
+        self.coords = [37.530887, 55.703118]
         self.scale = 0.002
         self.scale_coeff = 2
         self.map_style = 'map'
@@ -42,12 +42,34 @@ class Example(QWidget):
         self.pixmap.loadFromData(response.content)
         self.image.setPixmap(self.pixmap)
 
+    def check_coords(self):
+        if self.coords[0] < -180:
+            self.coords[0] += 360
+        if self.coords[0] > 180:
+            self.coords[0] -= 360
+        if self.coords[1] < -90:
+            self.coords[1] += 180
+        if self.coords[1] > 90:
+            self.coords[1] -= 180
+
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_PageDown:
             self.scale *= self.scale_coeff
             self.getImage()
         elif event.key() == Qt.Key_PageUp:
             self.scale /= self.scale_coeff
+            self.getImage()
+        elif event.key() == Qt.Key_Up:
+            self.coords[1] += self.scale
+            self.getImage()
+        elif event.key() == Qt.Key_Down:
+            self.coords[1] -= self.scale
+            self.getImage()
+        elif event.key() == Qt.Key_Left:
+            self.coords[0] -= self.scale
+            self.getImage()
+        elif event.key() == Qt.Key_Right:
+            self.coords[0] += self.scale
             self.getImage()
 
 
